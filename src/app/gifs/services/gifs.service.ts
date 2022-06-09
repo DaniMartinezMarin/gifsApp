@@ -7,17 +7,21 @@ import { Gif, SearchGIFResponse } from '../interfaces/search-gif-response';
 })
 export class GifsService {
   private _historial: string[] = [];
-  private apiKey: string = 'CtbSNZMFPFlbWl1x5KQjtqPOHnE1ema5';
-
-  resultados: Gif[] = [];
+  private _apiKey: string = 'CtbSNZMFPFlbWl1x5KQjtqPOHnE1ema5';
+  private _resultados: Gif[] = [];
 
   get historial(): string[] {
     return [...this._historial];
   }
 
+  get resultados() : Gif[] {
+    return [...this._resultados];
+  }
+
   constructor(private ngHttpClient: HttpClient) {
 
     this._historial = JSON.parse(localStorage.getItem('historial')!) || [];
+    this._resultados = JSON.parse(localStorage.getItem('ultimosResultados')!) || [];
   }
 
   buscarGifs(query: string = '') {
@@ -31,10 +35,11 @@ export class GifsService {
     }
 
     this.ngHttpClient
-      .get<SearchGIFResponse>(`https://api.giphy.com/v1/gifs/search?api_key=${this.apiKey}&q=${query}&limit=10`)
+      .get<SearchGIFResponse>(`https://api.giphy.com/v1/gifs/search?api_key=${this._apiKey}&q=${query}&limit=10`)
       .subscribe(
         (response: SearchGIFResponse) => {
-          this.resultados = response.data;
+          this._resultados = response.data;
+          localStorage.setItem('ultimosResultados', JSON.stringify(this._resultados));
         },
         (error) => {
           console.error('Se ha producido un error en la petición: ', error);
