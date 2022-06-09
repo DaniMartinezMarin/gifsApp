@@ -8,7 +8,7 @@ import { GifsService } from 'src/app/gifs/services/gifs.service';
 })
 export class SideBarComponent implements OnInit {
 
-  get historial(): String[] {
+  get historial(): string[] {
     return this.gifsService.historial;
   }
 
